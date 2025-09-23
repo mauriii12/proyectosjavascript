@@ -29,6 +29,7 @@ function menuprincipal() {
     console.log("2. Buscar una tarea");
     console.log("3. Agregar una tarea");
     console.log("4. Editar una tarea");
+    console.log("5. Borrar una tarea");
     console.log("0. Salir del programa");
 }
 
@@ -57,12 +58,19 @@ function crearTarea() {
 
     let fechadecreacion;
 
+    let fechadevencimiento;
+    fechadevencimiento = new Date(prompt("ingrese la fecha de vencimiento de la tarea: (AAAA-MM-DD)"));
+
+
+
     let tarea = {
+
         titulo: titulo,
         descripcion: descripcion,
         estado: Estado.PENDIENTE,
         dificultad: dif,
-        fechadecreacion: new Date()
+        fechadecreacion: new Date(),
+        fechadevencimiento: fechadevencimiento,
     };
 
     tareas.push(tarea);
@@ -73,6 +81,11 @@ function crearTarea() {
 
 
 function mostrarTarea(t, index) {
+
+
+
+
+
     console.log("\n-------------------------");
     console.log(`\nTarea #${index + 1}`);
     console.log(`Titulo: ${t.titulo}`);
@@ -103,7 +116,7 @@ function mostrarTarea(t, index) {
 
     console.log(`Dificultad: ${dificultadTexto}`);
     console.log(`Fecha de creacion: ${t.fechadecreacion}`);
-
+    console.log(`Fecha de vencimiento: ${t.fechadevencimiento}`);
     console.log("\n-------------------------");
 }
 
@@ -127,6 +140,7 @@ function vertareas() {
 
         for (let i = 0; i < cantidadTareas; i++) {
             let t = tareas[i];
+            if (tareas[i] == -1) continue;
             let mostrar = false;
 
             switch (tarea_opc) {
@@ -181,7 +195,7 @@ function buscarTarea() {
     let encontradas = 0;
 
     for (let i = 0; i < cantidadTareas; i++) {
-        if (tareas[i].titulo.includes(buscado)) {
+        if (tareas[i].titulo.includes(buscado)) { //el includes es como el sizeof en c y sirve para buscar tareas por strings
             mostrarTarea(tareas[i], i);
             encontradas++;
         }
@@ -216,7 +230,7 @@ function editarTarea() {
     let nuevoTitulo = prompt(
         "> Nuevo titulo (ENTER para dejar igual): "
     );
-    if (nuevoTitulo.trim() !== "") {
+    if (nuevoTitulo.trim() !== "") {   //el trim borra los espacios al principio y al final del string
         t.titulo = nuevoTitulo;
     }
 
@@ -244,6 +258,37 @@ function editarTarea() {
     console.log("Tarea editada correctamente.");
 }
 
+function borrartarea() {
+
+
+    let borrar;
+
+    if (cantidadTareas === 0) {
+        console.log("No hay tareas cargadas.");
+        return;
+    }
+
+    console.log("\n--- Borrar Tareas---");
+    for (let i = 0; i < cantidadTareas; i++) {
+        console.log(`${i + 1}. ${tareas[i].titulo}`);
+    }
+
+
+    borrar = Number(prompt("ingrese la tarea que desea borrar"));
+
+    if (borrar < 1 || borrar > cantidadTareas) {
+        console.log("Numero invalido.");
+        return;
+    }
+
+    
+
+     let eliminada = tareas.splice(borrar - 1, 1);    // el termino splice sirve para borrar tareas
+     
+    cantidadTareas--;
+
+    console.log(`Tarea "${eliminada[0].titulo}" eliminada correctamente.`);
+}
 
 
 
@@ -268,6 +313,9 @@ function main() {
                 break;
             case 4:
                 editarTarea();
+                break;
+            case 5:
+                borrartarea();
                 break;
             case 0:
                 console.log("Saliendo del programa...");
